@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="main">
+    <blockquote class="layui-elem-quote">分布分析</blockquote>
+    <form class="layui-form" action="" method="post">
+      <label class="layui-form-label">分析的属性</label>
+      <div class="layui-input-inline">
+        <select name="column">
+        {% for column in columns %}
+          <option value="{{ column }}" {% if form['column'] and form['column'] == column %}selected{% endif %}>{{ column }}</option>
+        {% endfor %}
+        </select>                              
+      </div>
+      <div class="layui-input-inline">
+        <input type="text" name="top" placeholder="填写统计前几个" class="layui-input" value="{% if form['top'] %}{{ form['top'] }}{% endif %}">
+      </div>
+      <div class="layui-input-inline">
+        <button class="layui-btn" lay-submit lay-filter="analyse">分析</button>
+      </div>
+    </form>
+    <br/><br/>
+    <form class="layui-form">
+      <input type="hidden" name="column" value="{{ form['column'] }}">
+      <label class="layui-form-label">处理方式</label>
+      <div class="layui-input-inline">
+        <select name="handler">
+          <option value="0" {% if config[form['column']] and config[form['column']][0] == '0' %}selected{% endif %}>不处理</option>
+          <option value="1" {% if config[form['column']] and config[form['column']][0] == '1' %}selected{% endif %}>靠后归为其它</option>
+          <option value="2" {% if config[form['column']] and config[form['column']][0] == '2' %}selected{% endif %}>通过聚类划分</option>
+        </select>                              
+      </div>
+      <div class="layui-input-inline">
+        <input type="text" name="value" placeholder="划分数值" class="layui-input" value="{% if config[form['column']] %}{{ config[form['column']][1] }}{% endif %}">
+      </div>
+      <div class="layui-input-inline">
+        <button class="layui-btn" lay-submit lay-filter="set">保存配置</button>
+      </div>
+    </form>
+    <div id="analyse">
+      <img src='/{{ img }}' style="border:0; width:1000px;" />
+    </div>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element', 'form', 'layer'], function(){
+  var element = layui.element
+  ,$ = layui.$
+  ,form = layui.form
+  ,layer = layui.layer;
+
+  form.on('submit(set)', function(data){
+    $.post('/handler/distribution/{{ proid }}', data.field, function(result){
+      layer.msg(result.msg);
+    }, 'json');
+    return false;
+  });
+});
+
+</script>
+</body>
+</html>

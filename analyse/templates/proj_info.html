@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="main">
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">{{ project.name }}</h2>
+            <div class="layui-colla-content layui-show">
+                数据文件：{{ project.filename }}<br/>
+                获取时间：{{ project.datetime }}<br/>
+                项目描述：{{ project.info }}<br/>
+            </div>
+        </div>
+    </div>
+    <table lay-filter="top10">
+      <thead>
+        <tr>
+        {% for column in columns %}
+          <th lay-data="{field:'{{ column }}'}">{{ column }}</th>
+        {% endfor %}
+        </tr> 
+      </thead>
+      <tbody>
+      {% for item in data %}
+        <tr>
+          {% for column in columns %}
+          <td>{{ item[column] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element', 'table'], function(){
+  var element = layui.element
+  ,table = layui.table;
+
+  table.init('top10', {
+      height: 350
+    }); 
+});
+
+</script>
+</body>
+</html>

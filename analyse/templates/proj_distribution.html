@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="main">
+    <blockquote class="layui-elem-quote">分布分析</blockquote>
+    <form class="layui-form" action="" method="post">
+      <label class="layui-form-label">分析的属性</label>
+      <div class="layui-input-inline">
+        <select name="column">
+        {% for column in columns %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endfor %}
+        </select>                              
+      </div>
+      <div class="layui-input-inline">
+        <button class="layui-btn" lay-submit lay-filter="*">分析</button>
+      </div>
+    </form>
+    <div id="analyse">
+      <table class="layui-table" lay-skin="line">
+        <tbody class="analyse">
+          
+        </tbody>
+      </table>
+    </div>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element', 'form'], function(){
+  var element = layui.element
+  ,$ = layui.$
+  ,form = layui.form;
+
+  // form.on('submit(*)', function(data){
+  //   alert(data.elem);
+  //   return true;
+  // });
+});
+
+</script>
+</body>
+</html>

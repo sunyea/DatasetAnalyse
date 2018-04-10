@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="main">
+    <blockquote class="layui-elem-quote">属性处理配置</blockquote>
+    <div class="layui-collapse">
+        {% for column, v in data.items() %}
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">{{ column }}</h2>
+            <div class="layui-colla-content layui-show">
+                <div class="layui-row">
+                  <div class="layui-col-md2">
+                    {{ v }}
+                  </div>
+                  <div class="layui-col-md10 layui-form">
+                    <input type="hidden" name="column" value="{{ column }}">
+                    <label class="layui-form-label">处理方式：</label>
+                    <div class="layui-input-inline">
+                      <select name="handler">
+                        <option value="0" {% if configs[column] and configs[column][0] == '0' %}selected{% endif %}>不处理</option>
+                        <option value="1" {% if configs[column] and configs[column][0] == '1' %}selected{% endif %}>去除</option>
+                        <option value="2" {% if configs[column] and configs[column][0] == '2' %}selected{% endif %}>正则转换</option>
+                        <option value="3" {% if configs[column] and configs[column][0] == '3' %}selected{% endif %}>聚类</option>
+                        <option value="4" {% if configs[column] and configs[column][0] == '4' %}selected{% endif %}>离散化</option>
+                      </select>                              
+                    </div>
+                    <div class="layui-input-inline input-value">
+                      <input type="text" name="value" placeholder="处理参数" class="layui-input" value="{% if configs[column] %}{{ configs[column][1] }}{% endif %}">
+                    </div>
+                    <div class="layui-input-inline">
+                      <button class="layui-btn" lay-submit lay-filter="*">确定</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element', 'form'], function(){
+  var element = layui.element
+  ,$ = layui.$
+  ,form = layui.form;
+
+  form.on('submit(*)', function(data){
+    $.post('/handler/settings/{{ proid }}', data.field, function(result){
+      if(result.code == 0){
+        layer.msg('保存成功');
+      }else{
+        layer.msg(result.msg);
+      }
+    }, 'json');
+    return false;
+  });
+});
+
+</script>
+</body>
+</html>

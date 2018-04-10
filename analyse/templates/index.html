@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="header">
+    <ul class="layui-nav" lay-filter="">
+        <li class="layui-nav-item layui-this"><a href="">主页</a></li>
+    </ul>
+</div>
+<div class="main">
+    <div class="layui-row">
+        <button class="layui-btn layui-btn-sm btn-new">新建项目</button>
+    </div>
+    <div class="layui-collapse">
+        {% for project in projects %}
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">{{ project.name }}</h2>
+            <div class="layui-colla-content">
+                文件名：{{ project.filename }}<br/>
+                时间：{{ project.datetime }}<br/>
+                描述：{{ project.info }}<br/>
+                <button class="layui-btn layui-btn-sm btn-analyse" proid="{{ project.proid }}">进行分析</button>
+                <button class="layui-btn layui-btn-sm btn-delete" proid="{{ project.proid }}">删除</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<form class="layui-form" id="proj_form" style="display:none;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">项目名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入项目名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">文件名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="filename" required lay-verify="required" placeholder="请输入文件名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">项目简介</label>
+        <div class="layui-input-block">
+            <textarea name="info" placeholder="请输入简介" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="new">新建</button>
+          <button class="layui-btn layui-btn-primary btn-close">取消</button>
+        </div>
+    </div>
+</form>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element', 'layer', 'form'], function(){
+    var element = layui.element
+    ,layer = layui.layer
+    ,form = layui.form
+    ,$ = layui.$;
+
+    //新建工程
+    $('.btn-new').on('click', function(){
+        $('#proj_form input').val('');
+        $('#proj_form textarea').val('');
+        layer.open({
+            type: 1
+            ,title: '新建项目'
+            ,area: ['500px', '350px']
+            ,content: $('#proj_form')
+        });
+    });
+    $('.btn-close').on('click', function(){
+        layer.closeAll();
+    });
+    form.on('submit(new)', function(data){
+        $.post('/project/new', data.field, function(result){
+            if(result.code == 0){
+                layer.msg(result.msg);
+                layer.closeAll();
+                location.reload();
+            }else{
+                layer.msg(result.msg);
+            }
+        }, 'json');
+        return false;
+    });
+
+    //删除项目
+    $('.btn-delete').on('click', function(){
+        proid = $(this).attr('proid');
+        layer.confirm('是否要删除该项目？', function(index){
+            $.post('/project/del', {proid: proid}, function(result){
+                if(result.code == 0){
+                    layer.msg(result.msg);
+                    location.reload();
+                }else{
+                    layer.msg(result.msg);
+                }
+            }, 'json');
+            layer.close(index);
+        });
+        
+    });
+
+    //进入分析
+    $('.btn-analyse').on('click', function(){
+        proid = $(this).attr('proid');
+        location.href='/analyse/'+proid;
+    });
+
+});
+</script>
+</body>
+</html>

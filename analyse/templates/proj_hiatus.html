@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="main">
+    <blockquote class="layui-elem-quote">缺失值分析</blockquote>
+    <div class="layui-collapse">
+        {% for column in columns %}
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">{{ column }}</h2>
+            <div class="layui-colla-content">
+                <div class="layui-row">
+                  <div class="layui-col-md2">
+                    总数:{{ piesize[column]['count'] }}<br/>
+                    缺失数:{{ piesize[column]['hiatus'] }}<br/>
+                    缺失率:{{ piesize[column]['percent'] }}%
+                  </div>
+                  <div class="layui-col-md10 layui-form">
+                    <input type="hidden" name="column" value="{{ column }}">
+                    <label class="layui-form-label">处理方式：</label>
+                    <div class="layui-input-inline">
+                      <select name="handler">
+                        <option value="0" {% if configs[column] and configs[column][0] == '0' %}selected{% endif %}>不处理</option>
+                        <option value="1" {% if configs[column] and configs[column][0] == '1' %}selected{% endif %}>插入固定值</option>
+                        <option value="2" {% if configs[column] and configs[column][0] == '2' %}selected{% endif %}>上个值</option>
+                        <option value="3" {% if configs[column] and configs[column][0] == '3' %}selected{% endif %}>下个值</option>
+                        <option value="4" {% if configs[column] and configs[column][0] == '4' %}selected{% endif %}>平均值</option>
+                        <option value="5" {% if configs[column] and configs[column][0] == '5' %}selected{% endif %}>删除行</option>
+                      </select>                              
+                    </div>
+                    <div class="layui-input-inline input-value" style="display: {% if configs[column] and configs[column][0] == '1' %}{% else %}none{% endif %};">
+                      <input type="text" name="value" placeholder="插入值" class="layui-input" value="{% if configs[column] %}{{ configs[column][1] }}{% endif %}">
+                    </div>
+                    <div class="layui-input-inline">
+                      <button class="layui-btn" lay-submit lay-filter="*">确定</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element', 'form'], function(){
+  var element = layui.element
+  ,$ = layui.$
+  ,form = layui.form;
+
+  form.on('select', function(data){
+    if(data.value == '1'){
+      var parent = $(data.elem).closest('.layui-form');
+      parent.find('.input-value').show();
+    }else{
+      var parent = $(data.elem).closest('.layui-form');
+      parent.find('input[name="value"]').val('');
+      parent.find('.input-value').hide();
+    }
+  });
+  form.on('submit(*)', function(data){
+    $.post('/handler/hiatus/set_{{ proid }}', data.field, function(result){
+      if(result.code == 0){
+        layer.msg('保存成功');
+      }else{
+        layer.msg(result.msg);
+      }
+    }, 'json');
+    return false;
+  });
+});
+
+</script>
+</body>
+</html>

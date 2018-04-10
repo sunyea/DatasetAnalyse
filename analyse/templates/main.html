@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="header">
+    <ul class="layui-nav" lay-filter="">
+        <li class="layui-nav-item"><a href="/">主页</a></li>
+        <li class="layui-nav-item layui-this"><a href="javascript:;" class="data_info">{{ project.name }}</a></li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">质量分析</a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:;" class="analyse" kind="hiatus">缺失值</a></dd>
+                <dd><a href="javascript:;" class="analyse" kind="unusual">异常值</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">特征分析</a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:;" class="analyse" kind="distribution">分布分析</a></dd>
+                <dd><a href="javascript:;" class="analyse" kind="contrast">对比分析</a></dd>
+                <dd><a href="javascript:;" class="analyse" kind="statis">统计量分析</a></dd>
+                <dd><a href="javascript:;" class="analyse" kind="correlation">相关性分析</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">预处理</a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:;" class="analyse" kind="settings">属性处理配置</a></dd>
+                <dd><a href="javascript:;" class="analyse" kind="precondition">生成新数据</a></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+<div class="contentframe">
+   <iframe id="content" src="/data/info/{{ project.proid }}" style="width:100%; height:100%; border: 0px"></iframe> 
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+layui.use(['element'], function(){
+  var element = layui.element
+  $ = layui.$;
+  $('.contentframe').height($(window).height()-70)
+
+  $('.data_info').on('click', function(){
+    $('#content').attr('src', '/data/info/{{ project.proid }}');
+  });
+  $('.analyse').on('click', function(){
+    kind = $(this).attr('kind')
+    $('#content').attr('src', '/data/'+kind+'/{{ project.proid }}');
+  });
+});
+
+</script>
+</body>
+</html>
