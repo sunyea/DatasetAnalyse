@@ -3,6 +3,7 @@ import pandas as pd
 from web.contrib.template import render_jinja
 import matplotlib.pyplot as plt
 import numpy as np
+import os, shutil
 
 
 from utils import Project
@@ -26,7 +27,7 @@ class info():
     '''
     def GET(self, proid):
         this_proj = P.get(proid)
-        df = pd.read_csv(this_proj['filename'], sep=':::', engine='python', encoding='utf-8')
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
         df10 = df.iloc[:10, :]
         return render.proj_info(project=this_proj, columns=list(df.columns), data=list(df10.to_dict('index').values()))
 
@@ -36,7 +37,7 @@ class hiatus():
     '''
     def GET(self, proid):
         this_proj = P.get(proid)
-        df = pd.read_csv(this_proj['filename'], sep=':::', engine='python', encoding='utf-8')
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
         columns = list(df.columns)
         df = df.isnull()
         piesize = dict()
@@ -63,7 +64,7 @@ class unusual():
     '''
     def GET(self, proid):
         this_proj = P.get(proid)
-        df = pd.read_csv(this_proj['filename'], sep=':::', engine='python', encoding='utf-8')
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
         columns = list(df.columns)
         return render.proj_unusual(proid=proid, columns=columns)
 
@@ -73,7 +74,7 @@ class distribution():
     '''
     def GET(self, proid):
         this_proj = P.get(proid)
-        df = pd.read_csv(this_proj['filename'], sep=':::', engine='python', encoding='utf-8')
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
         columns = list(df.columns)
         return render.proj_distribution(proid=proid, columns=columns)
     def POST(self, proid):
@@ -130,7 +131,7 @@ class distribution():
 class settings():
     def GET(self, proid):
         this_proj = P.get(proid)
-        df = pd.read_csv(this_proj['filename'], sep=':::', engine='python', encoding='utf-8')
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
         columns = list(df.columns)
         row = list(df.iloc[0, :])
         data = dict(zip(columns, row))
@@ -143,5 +144,18 @@ class precondition():
         handler = HandlerConfig(proid)
         configs = handler.getAllConfig()
         return render.proj_precondition(proid=proid, configs=configs)
+    def POST(self, proid):
+        handler = HandlerConfig(proid)
+        configs = handler.getAllConfig2()
+        form  = web.input()
+        filename = form.fname
+        #将原始数据拷贝到新文件中
+        P = Project()
+        this_proj = P.get(proid)
+        if os.path.exists(this_proj['filename']):
+            shutil.copyfile(this_proj['filename'], filename)
+            return render.proj_precondition_save(proid=proid, filename=filename, configs=configs, length=len(configs))
+        else:
+            return 'no file'
 
 app_data = web.application(urls, locals())

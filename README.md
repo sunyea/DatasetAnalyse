@@ -3,17 +3,20 @@
 
 # 1. 概述
 本应用分三个部分独立运行，但数据流自上而下：采集系统从网络爬取原始数据，分析系统对原始数据进行分析和清洗，生成新的适合机器学习的数据集，机器学习系统通过原始数据进行建模学习，达到预测效果并生成分析结果。<br>
-由于数据集很小，不适合深度学习模型，所以本应用采用传统ML学习模型完成，主要是为了探讨数据采集、清洗与分析的原理和流程。
+根据中文数据集特性：<br>
+对类别繁多、分布均匀的类别属性进行中文切词并Kmeans聚类，然后再进行离散映射为数值分类。<br>
+对类别繁多、分布不均匀的属性，将众多小类别归为一类进，然后再映射为数值分类。<br>
+对中文内容繁多的信息类属性，提取多个关键字，将关键字汇总并聚类，通过对关键字进行One-Hot编码，分析关键字对因变量的影响权重。
 ## 1.1. 实验数据
-本应用实验数据来自 http://www.51job.com 的数据，采用Scrapy框架搭建爬虫获取数据，为了实验方便，只检索关键字为"人工智能+机器学习+算法"的信息。
+本应用实验数据来自 http://www.51job.com 的数据，采用Scrapy框架搭建爬虫获取数据。
 ## 1.2. 开发环境
-软件环境：Python 3.6 (Anaconda3)<br>
-开发工具：PyCharm Edu版<br>
-依赖包：scarpy,web.py,matplotlib,sklearn等
+软件环境：Python 3.6 (Anaconda)<br>
+开发工具：PyCharm<br>
+依赖包：scikit-learn, pandas, matplotlib, scrapy, web.py, jinja2, jieba等<br>
+前端依赖：Layui, JQuery
 
 # 2. 数据采集
-采集系统采用Scrapy框架完成，采集数据结构定义于getdata/getdata/items.py文件，爬虫定义于getdata/getdata/spiders/spider.py文件<br>
-数据采集后存储于data目录下
+采集系统采用Scrapy框架完成，数据采集后存储于data目录下
 ## 2.1. 运行方式
 在getdata目录下运行
 ```Bash

@@ -27,8 +27,8 @@
                         <option value="0" {% if configs[column] and configs[column][0] == '0' %}selected{% endif %}>不处理</option>
                         <option value="1" {% if configs[column] and configs[column][0] == '1' %}selected{% endif %}>去除</option>
                         <option value="2" {% if configs[column] and configs[column][0] == '2' %}selected{% endif %}>正则转换</option>
-                        <option value="3" {% if configs[column] and configs[column][0] == '3' %}selected{% endif %}>聚类</option>
-                        <option value="4" {% if configs[column] and configs[column][0] == '4' %}selected{% endif %}>离散化</option>
+                        <option value="3" {% if configs[column] and configs[column][0] == '3' %}selected{% endif %}>离散映射</option>
+                        <option value="4" {% if configs[column] and configs[column][0] == '4' %}selected{% endif %}>One-Hot</option>
                       </select>                              
                     </div>
                     <div class="layui-input-inline input-value">

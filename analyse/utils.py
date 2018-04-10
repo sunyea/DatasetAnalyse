@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import os
 import json
 import time
+import pandas as pd
 
 
 class Project():
@@ -99,7 +100,7 @@ class HandlerConfig():
 
     dict_hiatus = {'0': '不处理', '1': '插入固定值', '2': '上个值', '3': '下个值', '4': '平均值', '5': '删除行'}
     dict_distribution = {'0': '不处理', '1': '靠后归为其它', '2': '通过聚类划分'}
-    dict_settings = {'0': '不处理', '1': '去除', '2': '正则转换', '3': '聚类', '4': '离散化'}
+    dict_settings = {'0': '不处理', '1': '去除', '2': '正则转换', '3': '离散映射', '4': 'One-Hot'}
 
     def __init__(self, proid):
         self.configFile = 'projects/'+proid+'_config.xml'
@@ -163,7 +164,7 @@ class HandlerConfig():
     def getSettings(self):
         return self._getXml('settings')
 
-    #获取所有处理配置
+    #获取所有处理配置，显示列表
     def getAllConfig(self):
         tree = ET.parse(self.configFile)
         root = tree.getroot()
@@ -183,6 +184,27 @@ class HandlerConfig():
                 else:
                     columns[column.tag] = [handler+','+values]
         return columns
+
+    #获取所有处理配置，处理列表
+    def getAllConfig2(self):
+        tree = ET.parse(self.configFile)
+        root = tree.getroot()
+        config = dict()
+        i = 0
+        for ele in root:
+            for column in ele:
+                handler = column.get('handler')
+                values = column.text
+                config[i] = [ele.tag, column.tag, handler, values]
+                i += 1
+        return config
+
+class DataParse():
+
+    def __init__(self, proid):
+        P = Project()
+        this_proj = P.get(proid)
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
 
 
 

@@ -1,6 +1,6 @@
 import web
 import pandas as pd
-import json
+import json, time
 
 from utils import HandlerConfig
 from utils import Project
@@ -8,7 +8,10 @@ from utils import Project
 urls = ('/hiatus/(\w+)', 'HandHiatus'
         ,'/unusual/(\w+)', 'HandUnusual'
         ,'/distribution/(\w+)', 'HandDistribution'
-        ,'/settings/(\w+)', 'HandSettings')
+        ,'/settings/(\w+)', 'HandSettings'
+        ,'/p_hiatus/(\w+)', 'ParseHiatus'
+        ,'/p_distribution/(\w+)', 'ParseDistribution'
+        ,'/p_settings/(\w+)', 'ParseSettings')
 
 class HandHiatus():
     def POST(self, parm):
@@ -26,7 +29,7 @@ class HandUnusual():
     def POST(self, proid):
         P = Project()
         this_proj = P.get(proid)
-        df = pd.read_csv(this_proj['filename'], sep=':::', engine='python', encoding='utf-8')
+        df = pd.read_csv(this_proj['filename'], engine='python', encoding='utf-8')
         form = web.input()
         dd = dict(df[form['column']].describe())
         for k, v in dd.items():
@@ -48,5 +51,56 @@ class HandSettings():
         handler = HandlerConfig(proid)
         form = web.input()
         return handler.saveSettings(form)
+
+#处理缺失值
+class ParseHiatus():
+    def POST(self, proid):
+        form = web.input()
+        filename = form.filename
+        column = form.column
+        handler = form.handler
+        value = form.value
+        df = pd.read_csv(filename, engine='python', encoding='utf-8')
+        if handler == '1':
+            #插入固定值
+            df[column].fillna(value)
+        elif handler == '2':
+            #上个值
+            df[column].ffill()
+        elif handler == '3':
+            #下个值
+            df[column].bfill()
+        elif handler == '4':
+            df[column].dropna(axis=0)
+        df.to_csv(filename, index=False, encoding='utf-8')
+        return json.dumps({'code': 0})
+
+#处理属性特征值
+class ParseDistribution():
+    def POST(self, proid):
+        form = web.input()
+        filename = form.filename
+        column = form.column
+        handler = form.handler
+        value = form.value
+        df = pd.read_csv(filename, engine='python', encoding='utf-8')
+        if handler == '1':
+            #靠后归为其它类
+            datalist = dict(df[column].value_counts())
+            sorted(datalist.items(), key=lambda x: x[1], reverse=True)
+            top = int(value)
+            labels = list(datalist.keys())
+            labels = labels[:top]
+            df[column] = df[column].map(lambda x: x if x in labels else '其它')
+        elif handler == '2':
+            #通过聚类划分
+            pass
+        df.to_csv(filename, index=False, encoding='utf-8')
+        return json.dumps({'code': 0})
+
+#按设置处理属性值
+class ParseSettings():
+    def POST(self, proid):
+        return json.dumps({'code': 0})
 
 app_handler = web.application(urls, locals())

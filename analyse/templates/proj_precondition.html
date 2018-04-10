@@ -32,8 +32,7 @@
         <div class="layui-colla-item">
             <h2 class="layui-colla-title">新数据</h2>
             <div class="layui-colla-content layui-show">
-                <form class="layui-form">
-                  <input type="hidden" name="proid" value="{{ proid }}">
+                <form class="layui-form" method="post">
                   <label class="layui-form-label">保存文件：</label>
                   <div class="layui-input-inline">
                     <input type="text" name="fname" placeholder="文件名" class="layui-input" value="dataset/data_new_{{ proid }}.csv" size="50">
@@ -53,16 +52,6 @@ layui.use(['element', 'form'], function(){
   ,$ = layui.$
   ,form = layui.form;
 
-  form.on('submit(save)', function(data){
-    $.post('/handler/precondition/{{ proid }}', data.field, function(result){
-      if(result.code == 0){
-        layer.msg('保存成功');
-      }else{
-        layer.msg(result.msg);
-      }
-    }, 'json');
-    return false;
-  });
 });
 
 </script>
