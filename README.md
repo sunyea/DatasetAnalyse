@@ -30,7 +30,7 @@ python run_getdata.py
 python run_analyse.py 5050
 ```
 然后在浏览器中输入 http://localhost:5050/ 即可访问到操作界面
-![](https://github.com/sunyea/DatasetAnalyse/raw/analyse/static/images/home.PNG)
+![](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/home.PNG)
 ## 3.2. 项目
 
 
