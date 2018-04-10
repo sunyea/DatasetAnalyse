@@ -31,8 +31,12 @@ python run_analyse.py 5050
 ```
 然后在浏览器中输入 http://localhost:5050/ 即可访问到操作界面
 ![home](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/home.PNG)
-## 3.2. 项目
-
-
-
-
+![index](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/index.PNG)
+## 3.2. 数据质量分析
+![hiatus](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/hiatus.png)
+## 3.3. 数据特征分析
+![fb](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/fb.png)
+## 3.4. 属性处理方式
+![cl](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/cl.png)
+## 3.5. 生成新数据
+![gen](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/gen.png)
