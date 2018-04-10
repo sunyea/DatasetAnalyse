@@ -12,11 +12,26 @@
 依赖包：scarpy,web.py,matplotlib,sklearn等
 
 # 2. 数据采集
-采集系统采用Scrapy框架完成，采集数据结构定义于getdata/items.py文件，爬虫定义于getdata/spiders/spider.py文件<br>
-数据采集后存储于data目录下，采用:::对数据进行分割，保存为csv文件，第一行为字段名
+采集系统采用Scrapy框架完成，采集数据结构定义于getdata/getdata/items.py文件，爬虫定义于getdata/getdata/spiders/spider.py文件<br>
+数据采集后存储于data目录下
+## 2.1. 运行方式
+在getdata目录下运行
+```Bash
+python run_getdata.py
+```
+## 2.2. 数据文件
+文件存放在getdata/data目录下，采用:::对数据进行分割，保存为csv文件，第一行为字段名
 
 # 3. 数据分析
 分析系统使用web.py构建分析UI，使用者通过浏览器打开操作界面。
+## 3.1. 运行方式
+在analyse目录下运行
+```Bash
+python run_analyse.py 5050
+```
+然后在浏览器中输入 http://localhost:5050/ 即可访问到操作界面
+![](https://github.com/sunyea/DatasetAnalyse/raw/analyse/static/images/home.PNG)
+## 3.2. 项目
 
 
 
