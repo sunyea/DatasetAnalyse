@@ -43,3 +43,4 @@ python run_analyse.py 5050
 ![cl](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/cl.png)
 ## 3.5. 生成新数据
 ![gen](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/gen.png)
+![gen](https://github.com/sunyea/DatasetAnalyse/raw/master/analyse/static/images/save.png)
