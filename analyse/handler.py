@@ -1,9 +1,10 @@
 import web
 import pandas as pd
-import json, time
+import json
 
 from utils import HandlerConfig
 from utils import Project
+from class_kmeans import ClassKMeans
 
 urls = ('/hiatus/(\w+)', 'HandHiatus'
         ,'/unusual/(\w+)', 'HandUnusual'
@@ -94,7 +95,9 @@ class ParseDistribution():
             df[column] = df[column].map(lambda x: x if x in labels else '其它')
         elif handler == '2':
             #通过聚类划分
-            pass
+            df = df.applymap(lambda x: x if x == x else 'null') #替换NaN的数据项
+            c_kmens = ClassKMeans()
+            df[column] = c_kmens.newClass(df[column], k=int(value))
         df.to_csv(filename, index=False, encoding='utf-8')
         return json.dumps({'code': 0})
 
