@@ -1,5 +1,6 @@
 import numpy as np
 import jieba
+import re
 from sklearn.cluster import KMeans
 
 #对分布均匀的类别进行聚类后重新分配类别名称，缩减类别数量
@@ -51,7 +52,25 @@ class ClassKMeans():
         new_docs = list()
         for index, value in enumerate(labels):
             if value not in dict_f.keys():
-                dict_f[value] = docs[index]
+                dict_f[value] = re.sub('\(.*?\)', '', docs[index])
             new_docs.append(dict_f[value])
         return new_docs
 
+#离散映射
+class ClassValues():
+    dict_file = None
+    def __init__(self, name):
+        self.dict_file = 'projects/{}.dict'.format(name)
+
+    #映射类别
+    def getClass(self, columns, uni_col):
+        dict_class = dict()
+        for index, value in enumerate(uni_col):
+            dict_class[value] = index
+        with open(self.dict_file, 'w', encoding='utf-8') as f:
+            for index, value in dict_class.items():
+                f.write('{},{}\n'.format(value, index))
+        new_col = list()
+        for value in columns:
+            new_col.append(dict_class[value])
+        return new_col

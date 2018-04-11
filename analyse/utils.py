@@ -194,7 +194,9 @@ class HandlerConfig():
         for ele in root:
             for column in ele:
                 handler = column.get('handler')
-                values = column.text
+                values = None
+                if column.text is not None:
+                    values = column.text.replace('\\', '\\\\')
                 config[i] = [ele.tag, column.tag, handler, values]
                 i += 1
         return config

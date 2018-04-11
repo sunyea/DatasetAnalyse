@@ -47,9 +47,16 @@ layui.use(['element'], function(){
     }, 'json');
   }
   {% endfor %}
+  //最后进行函数转换处理，函数在服务器端自定义
   function parse_{{length}}(){
-    element.progress('parse', '100%');
-    $('#progtext').html('<span class="red">已全部处理完毕</span>');
+    $.post('/handler/finally/{{proid}}', {
+      filename: '{{filename}}'
+    }, function(result){
+      if(result.code == 0){
+        element.progress('parse', '100%');
+        $('#progtext').html('<span class="red">已全部处理完毕</span>');
+      }
+    }, 'json');    
   }
 
   parse_0();
